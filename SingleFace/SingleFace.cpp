@@ -64,7 +64,14 @@ protected:
 };
 
 static char* SERVER = "127.0.0.1";
-static int	PORT = 5550;
+static int	 PORT = 5550;
+
+struct sockaddr_in si_other;
+int si_other_len = sizeof(si_other);
+WSADATA wsa;
+int udp_socket;
+double FTData[6];
+int FTData_len = sizeof(FTData);
 
 // Run the SingleFace application.
 int SingleFace::Run(HINSTANCE hInst, PWSTR lpCmdLine, int nCmdShow)
@@ -77,6 +84,33 @@ int SingleFace::Run(HINSTANCE hInst, PWSTR lpCmdLine, int nCmdShow)
 	char myPort[10];
 	GetPrivateProfileStringA( "ServerSettings","PORT","5550",myPort, 10 ,"./SingleFace.ini");
 	PORT = atoi(myPort);
+
+	// SEND UDP Data thru Socket to  FaceTrackNOIR
+
+	//Initialise winsock
+	printf("\nInitialising Winsock...");
+	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
+	{
+		printf("Failed. Error Code : %d", WSAGetLastError());
+		exit(EXIT_FAILURE);
+	}
+	printf("Initialised.\n");
+
+	//create socket
+	if ((udp_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == SOCKET_ERROR)
+	{
+		printf("socket() failed with error code : %d", WSAGetLastError());
+		exit(EXIT_FAILURE);
+	}
+
+	//setup address structure
+	memset((char *)&si_other, 0, si_other_len);
+	si_other.sin_family = AF_INET;
+	si_other.sin_port = htons(PORT);
+	//si_other.sin_port = htons(5550);
+	si_other.sin_addr.S_un.S_addr = inet_addr(SERVER);
+	//si_other.sin_addr.S_un.S_addr = inet_addr("127.0.0.1");
+
 
     MSG msg = {static_cast<HWND>(0), static_cast<UINT>(0), static_cast<WPARAM>(-1)};
     if (InitInstance(hInst, lpCmdLine, nCmdShow))
@@ -172,6 +206,10 @@ void SingleFace::UninitInstance()
         m_pVideoBuffer->Release();
         m_pVideoBuffer = NULL;
     }
+
+	// close UDP
+	closesocket(udp_socket);
+	WSACleanup();
 }
 
 
@@ -409,63 +447,27 @@ void SingleFace::FTHelperCallingBack(PVOID pVoid)
             pResult->Get3DPose(&scale, rotationXYZ, translationXYZ);
             pApp->m_eggavatar.SetTranslations(translationXYZ[0], translationXYZ[1], translationXYZ[2]);
             pApp->m_eggavatar.SetRotations(rotationXYZ[0], rotationXYZ[1], rotationXYZ[2]);
+						
+			// Send across UDP channel for FaceTrackNOIR
 
-
-			// SEND UDP Data thru Socket to  FaceTrackNOIR
-			struct sockaddr_in si_other;
-			int s, slen=sizeof(si_other);
-			WSADATA wsa;
- 
-			//Initialise winsock
-			printf("\nInitialising Winsock...");
-			if (WSAStartup(MAKEWORD(2,2),&wsa) != 0)
-			{
-				printf("Failed. Error Code : %d",WSAGetLastError());
-				exit(EXIT_FAILURE);
-			}
-			printf("Initialised.\n");
-     
-			//create socket
-			if ( (s=socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == SOCKET_ERROR)
-			{
-				printf("socket() failed with error code : %d" , WSAGetLastError());
-				exit(EXIT_FAILURE);
-			}
-     
-			//setup address structure
-			memset((char *) &si_other, 0, sizeof(si_other));
-			si_other.sin_family = AF_INET;
-			//si_other.sin_port = htons(PORT);
-			si_other.sin_port = htons(5550);
-			//si_other.sin_addr.S_un.S_addr = inet_addr(SERVER);
-			si_other.sin_addr.S_un.S_addr = inet_addr("127.0.0.1");
-
-			double test_data[6];
-			
 			//Translation XYZ
-			test_data[0] = (double) translationXYZ[0];	// Yaw
-			test_data[1] = (double) translationXYZ[1];	// Yaw
-			test_data[2] = (double) translationXYZ[2];	// Yaw
+			FTData[0] = (double) translationXYZ[0];	// Yaw
+			FTData[1] = (double)translationXYZ[1];	// Yaw
+			FTData[2] = (double)translationXYZ[2];	// Yaw
 
 			//Rotation
-			test_data[3] = (double) rotationXYZ[1];	// Yaw
-			test_data[4] = (double) rotationXYZ[0];	// Pitch
-			test_data[5] = (double) rotationXYZ[2];	// Roll
+			FTData[3] = (double)rotationXYZ[1];	// Yaw
+			FTData[4] = (double)rotationXYZ[0];	// Pitch
+			FTData[5] = (double)rotationXYZ[2];	// Roll
 
 			int err_send;
 			//send the message
-			err_send = sendto(s, (const char *) test_data, sizeof( test_data ) , 0 , (struct sockaddr *) &si_other, slen);
+			err_send = sendto(udp_socket, (const char *)FTData, FTData_len, 0, (struct sockaddr *) &si_other, si_other_len);
 			if (err_send == SOCKET_ERROR)
 			{
 				printf("sendto() failed with error code : %d" , WSAGetLastError());
 				exit(EXIT_FAILURE);
 			}
-
-			closesocket(s);
-			WSACleanup();
-
-
-
         }
     }
 }
