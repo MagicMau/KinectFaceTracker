@@ -23,12 +23,14 @@ public:
         , m_hAccelTable(NULL)
         , m_pImageBuffer(NULL)
         , m_pVideoBuffer(NULL)
-        , m_depthType(NUI_IMAGE_TYPE_DEPTH_AND_PLAYER_INDEX)
+        , m_depthType(NUI_IMAGE_TYPE_DEPTH)
         , m_colorType(NUI_IMAGE_TYPE_COLOR)
         , m_depthRes(NUI_IMAGE_RESOLUTION_320x240)
         , m_colorRes(NUI_IMAGE_RESOLUTION_640x480)
-        , m_bNearMode(TRUE)
+        , m_bNearMode(FALSE)
         , m_bSeatedSkeletonMode(FALSE)
+		, m_bShowVideo(FALSE)
+		, m_bShowEggAvatar(TRUE)
     {}
 
     int Run(HINSTANCE hInst, PWSTR lpCmdLine, int nCmdShow);
@@ -44,6 +46,7 @@ protected:
     BOOL                        PaintWindow(HDC hdc, HWND hWnd);
     BOOL                        ShowVideo(HDC hdc, int width, int height, int originX, int originY);
     BOOL                        ShowEggAvatar(HDC hdc, int width, int height, int originX, int originY);
+	BOOL						TiltCamera(int deltaAngle);
     static void                 FTHelperCallingBack(LPVOID lpParam);
     static int const            MaxLoadStringChars = 100;
 
@@ -55,12 +58,18 @@ protected:
     IFTImage*                   m_pImageBuffer;
     IFTImage*                   m_pVideoBuffer;
 
+	WCHAR						m_StatusText[1024];
+	int							m_StatusTextLen;
+
     NUI_IMAGE_TYPE              m_depthType;
     NUI_IMAGE_TYPE              m_colorType;
     NUI_IMAGE_RESOLUTION        m_depthRes;
     NUI_IMAGE_RESOLUTION        m_colorRes;
     BOOL                        m_bNearMode;
     BOOL                        m_bSeatedSkeletonMode;
+
+	BOOL						m_bShowVideo;
+	BOOL						m_bShowEggAvatar;
 };
 
 static char* SERVER = "127.0.0.1";
@@ -76,6 +85,9 @@ int FTData_len = sizeof(FTData);
 // Run the SingleFace application.
 int SingleFace::Run(HINSTANCE hInst, PWSTR lpCmdLine, int nCmdShow)
 {
+	// Status Text / Help Text
+	swprintf_s(m_StatusText, L"Help:\n'V': Toggle video\n'E': Toggle egg avatar\nUp Arrow: Tilt camera up\nDown Arrow: Tilt camera down");
+	m_StatusTextLen = wcslen(m_StatusText);
 
 	//Get Server Settings from INI file
 	char myServer[20];
@@ -86,20 +98,24 @@ int SingleFace::Run(HINSTANCE hInst, PWSTR lpCmdLine, int nCmdShow)
 	PORT = atoi(myPort);
 
 	// SEND UDP Data thru Socket to  FaceTrackNOIR
+	WCHAR szDebugText[1024];
 
 	//Initialise winsock
-	printf("\nInitialising Winsock...");
+	swprintf_s(szDebugText, L"\nInitialising UDP socket for %s:%d...\n", L"127.0.0.1", PORT);
+	OutputDebugString(szDebugText);
+
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
 	{
-		printf("Failed. Error Code : %d", WSAGetLastError());
+		swprintf_s(szDebugText, L"Failed. Error Code : %d\n", WSAGetLastError());
+		OutputDebugString(szDebugText);
 		exit(EXIT_FAILURE);
 	}
-	printf("Initialised.\n");
 
 	//create socket
 	if ((udp_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) == SOCKET_ERROR)
 	{
-		printf("socket() failed with error code : %d", WSAGetLastError());
+		swprintf_s(szDebugText, L"socket() failed with error code : %d\n", WSAGetLastError());
+		OutputDebugString(szDebugText);
 		exit(EXIT_FAILURE);
 	}
 
@@ -110,6 +126,19 @@ int SingleFace::Run(HINSTANCE hInst, PWSTR lpCmdLine, int nCmdShow)
 	//si_other.sin_port = htons(5550);
 	si_other.sin_addr.S_un.S_addr = inet_addr(SERVER);
 	//si_other.sin_addr.S_un.S_addr = inet_addr("127.0.0.1");
+
+	// send test message
+	int err_send = sendto(udp_socket, (const char *)FTData, FTData_len, 0, (struct sockaddr *) &si_other, si_other_len);
+	if (err_send == SOCKET_ERROR)
+	{
+		swprintf_s(szDebugText, L"sendto() failed with error code : %d\n", WSAGetLastError());
+		OutputDebugString(szDebugText);
+		exit(EXIT_FAILURE);
+	}
+
+	swprintf_s(szDebugText, L"Initialised.\n");
+	OutputDebugString(szDebugText);
+
 
 
     MSG msg = {static_cast<HWND>(0), static_cast<UINT>(0), static_cast<WPARAM>(-1)};
@@ -277,10 +306,24 @@ LRESULT CALLBACK SingleFace::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPA
         }
         break;
     case WM_KEYUP:
-        if (wParam == VK_ESCAPE)
-        {
-            PostQuitMessage(0);
-        }
+		switch (wParam)
+		{
+		case VK_ESCAPE:
+			PostQuitMessage(0);
+			break;
+		case VK_UP:
+			TiltCamera(1);
+			break;
+		case VK_DOWN:
+			TiltCamera(-1);
+			break;
+		case 'V':
+			m_bShowVideo = !m_bShowVideo;
+			break;
+		case 'E':
+			m_bShowEggAvatar = !m_bShowEggAvatar;
+			break;
+		}
         break;
     case WM_PAINT:
         hdc = BeginPaint(hWnd, &ps);
@@ -296,6 +339,20 @@ LRESULT CALLBACK SingleFace::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPA
     }
     return 0;
 }
+
+BOOL SingleFace::TiltCamera(int angleDelta)
+{
+	BOOL ret = TRUE;
+	LONG angle;
+	NuiCameraElevationGetAngle(&angle);
+
+	angle += angleDelta;
+	if (angle > NUI_CAMERA_ELEVATION_MINIMUM & angle < NUI_CAMERA_ELEVATION_MAXIMUM)
+		NuiCameraElevationSetAngle(angle);
+
+	return ret;
+}
+
 
 // Message handler for about box.
 INT_PTR CALLBACK SingleFace::About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
@@ -417,10 +474,22 @@ BOOL SingleFace::PaintWindow(HDC hdc, HWND hWnd)
     int halfWidth = width/2;
 
     // Show the video on the right of the window
-    errCount += !ShowVideo(hdc, width - halfWidth, height, halfWidth, 0);
+	if (m_bShowVideo) {
+		errCount += !ShowVideo(hdc, width - halfWidth, height, halfWidth, 0);
+	}
+	else {
+		rect.top = height * 0.25;
+		rect.left = halfWidth * 1.25;
+		DrawText(hdc, m_StatusText, m_StatusTextLen, &rect, DT_NOCLIP);
+	}
 
     // Draw the egg avatar on the left of the window
-    errCount += !ShowEggAvatar(hdc, halfWidth, height, 0, 0);
+	if (m_bShowEggAvatar) {
+		errCount += !ShowEggAvatar(hdc, halfWidth, height, 0, 0);
+	}
+ 
+	Sleep(15);
+
     return ret;
 }
 
@@ -451,7 +520,7 @@ void SingleFace::FTHelperCallingBack(PVOID pVoid)
 			// Send across UDP channel for FaceTrackNOIR
 
 			//Translation XYZ
-			FTData[0] = (double) translationXYZ[0];	// Yaw
+			FTData[0] = (double)translationXYZ[0];	// Yaw
 			FTData[1] = (double)translationXYZ[1];	// Yaw
 			FTData[2] = (double)translationXYZ[2];	// Yaw
 

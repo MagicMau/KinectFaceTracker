@@ -27,7 +27,7 @@ FTHelper::FTHelper()
     m_XCenterFace = 0;
     m_YCenterFace = 0;
     m_hFaceTrackingThread = NULL;
-    m_DrawMask = TRUE;
+	m_DrawMask = TRUE;
     m_depthType = NUI_IMAGE_TYPE_DEPTH;
     m_depthRes = NUI_IMAGE_RESOLUTION_INVALID;
     m_bNearMode = FALSE;
