@@ -176,7 +176,7 @@ BOOL EggAvatar::SetRotations(const float pitchDegrees, const float yawDegrees, c
     m_Pitch = (pitchDegrees-m_ReportedPitchAverage)/180.0f;
     m_Yaw = (-yawDegrees-m_ReportedYawAverage)/180.0f;
     m_Roll = (rollDegrees-m_ReportedRollAverage)/180.0f;
-    m_FacingUser = (abs(m_Pitch) < 0.2f && abs(m_Yaw) < 0.2f);
+    m_FacingUser = (fabs(m_Pitch) < 0.2f && fabs(m_Yaw) < 0.2f);
     return TRUE;
 }
 
@@ -189,8 +189,8 @@ BOOL EggAvatar::SetTranslations(const float tX, const float tY, const float tZ)
     m_TyAverage += 0.05f*(tY-m_TxAverage);
     m_TzAverage += 0.05f*(tZ-m_TxAverage);
 
-    float deltaMaxTxyz = max(abs(m_TxAverage - tX), abs(m_TyAverage - tY));
-    deltaMaxTxyz = max(deltaMaxTxyz, abs(m_TyAverage-tY));
+    float deltaMaxTxyz = max(fabs(m_TxAverage - tX), fabs(m_TyAverage - tY));
+    deltaMaxTxyz = max(deltaMaxTxyz, fabs(m_TyAverage-tY));
 
     if (deltaMaxTxyz > HeadPoseTranslationTrigger)
     {

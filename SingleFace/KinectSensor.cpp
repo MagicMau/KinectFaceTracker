@@ -430,9 +430,9 @@ HRESULT KinectSensor::GetClosestHint(FT_VECTOR3D* pHint3D)
         {
             if (m_SkeletonTracked[i])
             {
-                float d = abs(m_HeadPoint[i].x - pHint3D[1].x) +
-                    abs(m_HeadPoint[i].y - pHint3D[1].y) +
-                    abs(m_HeadPoint[i].z - pHint3D[1].z);
+                float d = fabs(m_HeadPoint[i].x - pHint3D[1].x) +
+                    fabs(m_HeadPoint[i].y - pHint3D[1].y) +
+                    fabs(m_HeadPoint[i].z - pHint3D[1].z);
                 if (smallestDistance == 0 || d < smallestDistance)
                 {
                     smallestDistance = d;

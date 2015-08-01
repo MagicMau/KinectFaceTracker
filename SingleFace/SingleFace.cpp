@@ -189,7 +189,7 @@ BOOL SingleFace::InitInstance(HINSTANCE hInstance, PWSTR lpCmdLine, int nCmdShow
     m_pVideoBuffer = FTCreateImage();
 
     m_hWnd = CreateWindow(szWindowClass, szTitleComplete, WS_OVERLAPPEDWINDOW,
-        CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, NULL, NULL, m_hInst, this);
+        CW_USEDEFAULT, 0, 320, 240, NULL, NULL, m_hInst, this);
     if (!m_hWnd)
     {
         return FALSE;
