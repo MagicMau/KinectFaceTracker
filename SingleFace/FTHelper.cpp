@@ -44,7 +44,7 @@ FTHelper::~FTHelper()
 HRESULT FTHelper::Init(HWND hWnd, FTHelperCallBack callBack, PVOID callBackParam, 
                        NUI_IMAGE_TYPE depthType, NUI_IMAGE_RESOLUTION depthRes, BOOL bNearMode, BOOL bFallbackToDefault, NUI_IMAGE_TYPE colorType, NUI_IMAGE_RESOLUTION colorRes, BOOL bSeatedSkeletonMode)
 {
-    if (!hWnd || !callBack)
+    if (!callBack)
     {
         return E_INVALIDARG;
     }
