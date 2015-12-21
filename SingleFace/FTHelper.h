@@ -5,7 +5,8 @@
 //------------------------------------------------------------------------------
 
 #pragma once
-#include <FaceTrackLib.h>
+
+//#include <FaceTrackLib.h>
 #include "KinectSensor.h"
 
 typedef void (*FTHelperCallBack)(PVOID lpParam);
@@ -13,21 +14,21 @@ typedef void (*FTHelperCallBack)(PVOID lpParam);
 class FTHelper
 {
 public:
-    FTHelper();
-    ~FTHelper();
+	FTHelper();
+	~FTHelper();
 
-    HRESULT Init(HWND hWnd, FTHelperCallBack callBack, PVOID callBackParam, 
+	HRESULT Init(HWND hWnd, FTHelperCallBack callBack, PVOID callBackParam,
         NUI_IMAGE_TYPE depthType, NUI_IMAGE_RESOLUTION depthRes, BOOL bNearMode, BOOL bFallbackToDefault, NUI_IMAGE_TYPE colorType, NUI_IMAGE_RESOLUTION colorRes, BOOL bSeatedSkeletonMode);
-    HRESULT Stop();
-    IFTResult* GetResult()      { return(m_pFTResult);}
-    BOOL IsKinectPresent()      { return(m_KinectSensorPresent);}
-    IFTImage* GetColorImage()   { return(m_colorImage);}
-    float GetXCenterFace()      { return(m_XCenterFace);}
-    float GetYCenterFace()      { return(m_YCenterFace);}
-    void SetDrawMask(BOOL drawMask) { m_DrawMask = drawMask;}
-    BOOL GetDrawMask()          { return(m_DrawMask);}
-    IFTFaceTracker* GetTracker() { return(m_pFaceTracker);}
-    HRESULT GetCameraConfig(FT_CAMERA_CONFIG* cameraConfig);
+	HRESULT Stop();
+	IFTResult* GetResult()      { return(m_pFTResult);}
+	BOOL IsKinectPresent()      { return(m_KinectSensorPresent);}
+	IFTImage* GetColorImage()   { return(m_colorImage);}
+	float GetXCenterFace()      { return(m_XCenterFace);}
+	float GetYCenterFace()      { return(m_YCenterFace);}
+	void SetDrawMask(BOOL drawMask) { m_DrawMask = drawMask;}
+	BOOL GetDrawMask()          { return(m_DrawMask);}
+	IFTFaceTracker* GetTracker() { return(m_pFaceTracker);}
+	HRESULT GetCameraConfig(FT_CAMERA_CONFIG* cameraConfig);
 
 private:
     KinectSensor                m_KinectSensor;

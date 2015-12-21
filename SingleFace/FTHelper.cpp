@@ -267,8 +267,11 @@ DWORD WINAPI FTHelper::FaceTrackingThread()
     while (m_ApplicationIsRunning)
     {
         CheckCameraInput();
-        InvalidateRect(m_hWnd, NULL, FALSE);
-        UpdateWindow(m_hWnd);
+		if (m_hWnd != NULL)
+		{
+			InvalidateRect(m_hWnd, NULL, FALSE);
+			UpdateWindow(m_hWnd);
+		}
         Sleep(16);
     }
 

@@ -44,12 +44,15 @@
     <ClInclude Include="FTHelper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="KinectFaceTracker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SingleFaceNoWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SingleFace.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="eggavatar.cpp">
@@ -62,6 +65,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FTHelper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="KinectFaceTracker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SingleFaceNoWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
