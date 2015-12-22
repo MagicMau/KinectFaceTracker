@@ -103,6 +103,11 @@ BOOL SingleFaceNoWindow::TiltCamera(int angleDelta)
 	return ret;
 }
 
+IFTImage* SingleFaceNoWindow::GetImage()
+{
+	IFTImage* img = m_FTHelper.GetColorImage();
+	return img;
+}
 
 /*
 * The "Face Tracker" helper class is generic. It will call back this function

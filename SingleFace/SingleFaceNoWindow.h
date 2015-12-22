@@ -27,17 +27,13 @@ public:
 	BOOL Start(int port);
 	void Stop();
 	BOOL TiltCamera(int angleDelta);
+	IFTImage* GetImage();
 
 protected:
 	static void                 FTHelperCallingBack(LPVOID lpParam);
 	static int const            MaxLoadStringChars = 100;
 
 	FTHelper                    m_FTHelper;
-	IFTImage*                   m_pImageBuffer;
-	IFTImage*                   m_pVideoBuffer;
-
-	WCHAR						m_StatusText[1024];
-	int							m_StatusTextLen;
 
 	NUI_IMAGE_TYPE              m_depthType;
 	NUI_IMAGE_TYPE              m_colorType;
@@ -45,7 +41,4 @@ protected:
 	NUI_IMAGE_RESOLUTION        m_colorRes;
 	BOOL                        m_bNearMode;
 	BOOL                        m_bSeatedSkeletonMode;
-
-	BOOL						m_bShowVideo;
-	BOOL						m_bShowEggAvatar;
 };

@@ -7,6 +7,8 @@
 #using <System.dll>
 
 using namespace System;
+using namespace System::Drawing;
+using namespace System::IO;
 using namespace System::Runtime::InteropServices;
 
 public ref class KinectFaceTracker
@@ -31,6 +33,24 @@ public:
 
 	void Stop() {
 		app->Stop();
+	}
+
+	Image^ GetImage() {
+		IFTImage* img = app->GetImage();
+		if (img) {
+			int len = img->GetBufferSize();
+			array<Byte>^ buf = gcnew array<Byte>(len);
+			Marshal::Copy(IntPtr((void*)img->GetBuffer()), buf, 0, len);
+			
+			MemoryStream^ stream = gcnew MemoryStream(buf);
+			try {
+				return Image::FromStream(stream);
+			}
+			finally {
+				stream->Close();
+			}
+		}
+		return nullptr;
 	}
 
 	bool TiltCamera(int angleDelta) {
