@@ -89,6 +89,11 @@ void SingleFaceNoWindow::Stop()
 	WSACleanup();
 }
 
+BOOL SingleFaceNoWindow::IsReceivingData()
+{
+	return m_FTHelper.IsReceivingData();
+}
+
 
 BOOL SingleFaceNoWindow::TiltCamera(int angleDelta)
 {

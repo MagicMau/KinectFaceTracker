@@ -28,6 +28,7 @@ public:
 	void Stop();
 	BOOL TiltCamera(int angleDelta);
 	IFTImage* GetImage();
+	BOOL IsReceivingData();
 
 protected:
 	static void                 FTHelperCallingBack(LPVOID lpParam);

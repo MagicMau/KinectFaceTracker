@@ -29,6 +29,7 @@ public:
 	BOOL GetDrawMask()          { return(m_DrawMask);}
 	IFTFaceTracker* GetTracker() { return(m_pFaceTracker);}
 	HRESULT GetCameraConfig(FT_CAMERA_CONFIG* cameraConfig);
+	BOOL IsReceivingData()      { return(m_LastTrackSucceeded); }
 
 private:
     KinectSensor                m_KinectSensor;

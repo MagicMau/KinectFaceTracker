@@ -57,6 +57,10 @@ public:
 		return app->TiltCamera(angleDelta) != 0;
 	}
 
+	bool IsReceivingData() {
+		return app->IsReceivingData() != 0;
+	}
+
 private:
 	SingleFaceNoWindow* app;
 };

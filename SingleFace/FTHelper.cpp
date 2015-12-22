@@ -272,7 +272,7 @@ DWORD WINAPI FTHelper::FaceTrackingThread()
 			InvalidateRect(m_hWnd, NULL, FALSE);
 			UpdateWindow(m_hWnd);
 		}
-        Sleep(16);
+        Sleep(17);
     }
 
     m_pFaceTracker->Release();
