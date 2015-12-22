@@ -38,17 +38,9 @@ public:
 	Image^ GetImage() {
 		IFTImage* img = app->GetImage();
 		if (img) {
-			int len = img->GetBufferSize();
-			array<Byte>^ buf = gcnew array<Byte>(len);
-			Marshal::Copy(IntPtr((void*)img->GetBuffer()), buf, 0, len);
-			
-			MemoryStream^ stream = gcnew MemoryStream(buf);
-			try {
-				return Image::FromStream(stream);
-			}
-			finally {
-				stream->Close();
-			}
+			Bitmap^ bmp = gcnew Bitmap((int)img->GetWidth(), (int)img->GetHeight(), (int)img->GetStride(), System::Drawing::Imaging::PixelFormat::Format32bppRgb, IntPtr(img->GetBuffer()));
+
+			return bmp;
 		}
 		return nullptr;
 	}
