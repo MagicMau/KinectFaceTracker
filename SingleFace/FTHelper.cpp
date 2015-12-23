@@ -27,7 +27,7 @@ FTHelper::FTHelper()
     m_XCenterFace = 0;
     m_YCenterFace = 0;
     m_hFaceTrackingThread = NULL;
-	m_DrawMask = TRUE;
+	m_DrawMask = FALSE; // does this save a lot of cycles?
     m_depthType = NUI_IMAGE_TYPE_DEPTH;
     m_depthRes = NUI_IMAGE_RESOLUTION_INVALID;
     m_bNearMode = FALSE;
@@ -179,7 +179,8 @@ void FTHelper::CheckCameraInput()
     {
         m_pFTResult->Reset();
     }
-    SetCenterOfImage(m_pFTResult);
+	//Does disabling the center of image also improve performance?
+    //SetCenterOfImage(m_pFTResult);
 }
 
 DWORD WINAPI FTHelper::FaceTrackingStaticThread(PVOID lpParam)
@@ -272,7 +273,7 @@ DWORD WINAPI FTHelper::FaceTrackingThread()
 			InvalidateRect(m_hWnd, NULL, FALSE);
 			UpdateWindow(m_hWnd);
 		}
-        Sleep(17);
+        Sleep(33); // 1000 / FPS = ms of Sleep. 16 = 60fps, 33 = 30fps
     }
 
     m_pFaceTracker->Release();
