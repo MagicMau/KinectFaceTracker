@@ -71,6 +71,7 @@ HRESULT FTHelper::Stop()
         WaitForSingleObject(m_hFaceTrackingThread, 1000);
     }
     m_hFaceTrackingThread = 0;
+	m_LastTrackSucceeded = FALSE;
     return S_OK;
 }
 
