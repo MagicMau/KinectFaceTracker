@@ -127,20 +127,20 @@ void SingleFaceNoWindow::FTHelperCallingBack(PVOID pVoid)
 		IFTResult* pResult = pApp->m_FTHelper.GetResult();
 		if (pResult && SUCCEEDED(pResult->GetStatus()))
 		{
-			FLOAT* pAU = NULL;
-			UINT numAU;
-			pResult->GetAUCoefficients(&pAU, &numAU);
+			//FLOAT* pAU = NULL;
+			//UINT numAU;
+			//pResult->GetAUCoefficients(&pAU, &numAU);
 			FLOAT scale;
 			FLOAT rotationXYZ[6];
 			FLOAT translationXYZ[3];
 			pResult->Get3DPose(&scale, rotationXYZ, translationXYZ);
 
-			// Send across UDP channel for FaceTrackNOIR
+			// Send across UDP channel for OpenTrack
 
 			//Translation XYZ
-			FTData[0] = (double)translationXYZ[0];	// Yaw
-			FTData[1] = (double)translationXYZ[1];	// Yaw
-			FTData[2] = (double)translationXYZ[2];	// Yaw
+			FTData[0] = (double)(translationXYZ[0] * 100.0f);	// X (in cm)
+			FTData[1] = (double)(translationXYZ[1] * 100.0f);	// Y (in cm)
+			FTData[2] = (double)(translationXYZ[2] * 100.0f);	// Z (in cm)
 
 													//Rotation
 			FTData[3] = (double)rotationXYZ[1];	// Yaw

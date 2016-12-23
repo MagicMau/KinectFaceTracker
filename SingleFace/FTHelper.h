@@ -56,7 +56,7 @@ private:
     NUI_IMAGE_TYPE              m_colorType;
     NUI_IMAGE_RESOLUTION        m_colorRes;
 
-    BOOL SubmitFraceTrackingResult(IFTResult* pResult);
+    BOOL SubmitFaceTrackingResult(IFTResult* pResult);
     void SetCenterOfImage(IFTResult* pResult);
     void CheckCameraInput();
     DWORD WINAPI FaceTrackingThread();

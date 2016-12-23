@@ -60,6 +60,7 @@ HRESULT FTHelper::Init(HWND hWnd, FTHelperCallBack callBack, PVOID callBackParam
     m_colorType = colorType;
     m_colorRes = colorRes;
     m_hFaceTrackingThread = CreateThread(NULL, 0, FaceTrackingStaticThread, (PVOID)this, 0, 0);
+	SetThreadPriority(m_hFaceTrackingThread, THREAD_PRIORITY_LOWEST);
     return S_OK;
 }
 
@@ -75,7 +76,7 @@ HRESULT FTHelper::Stop()
     return S_OK;
 }
 
-BOOL FTHelper::SubmitFraceTrackingResult(IFTResult* pResult)
+BOOL FTHelper::SubmitFaceTrackingResult(IFTResult* pResult)
 {
     if (pResult != NULL && SUCCEEDED(pResult->GetStatus()))
     {
@@ -174,7 +175,7 @@ void FTHelper::CheckCameraInput()
     m_LastTrackSucceeded = SUCCEEDED(hrFT) && SUCCEEDED(m_pFTResult->GetStatus());
     if (m_LastTrackSucceeded)
     {
-        SubmitFraceTrackingResult(m_pFTResult);
+        SubmitFaceTrackingResult(m_pFTResult);
     }
     else
     {
