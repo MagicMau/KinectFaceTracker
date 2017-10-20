@@ -84,6 +84,22 @@ void SingleFaceNoWindow::Stop()
 	// Clean up the memory allocated for Face Tracking and rendering.
 	m_FTHelper.Stop();
 
+	// zero out the final location and send it 5 times
+	FTData[0] = FTData[1] = FTData[2] = FTData[3] = FTData[4] = FTData[5] = 0;
+
+	int i;
+	for (i = 0; i < 5; i++)
+	{
+		int err_send;
+		//send the message
+		err_send = sendto(udp_socket, (const char *)FTData, FTData_len, 0, (struct sockaddr *) &si_other, si_other_len);
+		if (err_send == SOCKET_ERROR)
+		{
+			printf("sendto() failed with error code : %d", WSAGetLastError());
+			exit(EXIT_FAILURE);
+		}
+	}
+
 	// close UDP
 	closesocket(udp_socket);
 	WSACleanup();
