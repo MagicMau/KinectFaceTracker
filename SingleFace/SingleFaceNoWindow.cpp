@@ -36,7 +36,7 @@ int SingleFaceNoWindow::Start(int port)
 	{
 		swprintf_s(szDebugText, L"Failed. Error Code : %d\n", WSAGetLastError());
 		OutputDebugString(szDebugText);
-		exit(EXIT_FAILURE);
+		return false;
 	}
 
 	//create socket
@@ -44,7 +44,7 @@ int SingleFaceNoWindow::Start(int port)
 	{
 		swprintf_s(szDebugText, L"socket() failed with error code : %d\n", WSAGetLastError());
 		OutputDebugString(szDebugText);
-		exit(EXIT_FAILURE);
+		return false;
 	}
 
 	//setup address structure
@@ -61,7 +61,7 @@ int SingleFaceNoWindow::Start(int port)
 	{
 		swprintf_s(szDebugText, L"sendto() failed with error code : %d\n", WSAGetLastError());
 		OutputDebugString(szDebugText);
-		exit(EXIT_FAILURE);
+		return false;
 	}
 
 	swprintf_s(szDebugText, L"Initialised.\n");
@@ -79,30 +79,32 @@ int SingleFaceNoWindow::Start(int port)
 		m_bSeatedSkeletonMode));
 }
 
-void SingleFaceNoWindow::Stop()
+int SingleFaceNoWindow::Stop()
 {
 	// Clean up the memory allocated for Face Tracking and rendering.
 	m_FTHelper.Stop();
 
-	// zero out the final location and send it 5 times
-	FTData[0] = FTData[1] = FTData[2] = FTData[3] = FTData[4] = FTData[5] = 0;
+	//// zero out the final location and send it 5 times
+	//FTData[0] = FTData[1] = FTData[2] = FTData[3] = FTData[4] = FTData[5] = 0;
 
-	int i;
-	for (i = 0; i < 5; i++)
-	{
-		int err_send;
-		//send the message
-		err_send = sendto(udp_socket, (const char *)FTData, FTData_len, 0, (struct sockaddr *) &si_other, si_other_len);
-		if (err_send == SOCKET_ERROR)
-		{
-			printf("sendto() failed with error code : %d", WSAGetLastError());
-			exit(EXIT_FAILURE);
-		}
-	}
+	//int i;
+	//for (i = 0; i < 5; i++)
+	//{
+	//	int err_send;
+	//	//send the message
+	//	err_send = sendto(udp_socket, (const char *)FTData, FTData_len, 0, (struct sockaddr *) &si_other, si_other_len);
+	//	if (err_send == SOCKET_ERROR)
+	//	{
+	//		printf("sendto() failed with error code : %d", WSAGetLastError());
+	//		return false;
+	//	}
+	//}
 
 	// close UDP
 	closesocket(udp_socket);
 	WSACleanup();
+
+	return true;
 }
 
 BOOL SingleFaceNoWindow::IsReceivingData()

@@ -25,7 +25,7 @@ public:
 	{}
 
 	BOOL Start(int port);
-	void Stop();
+	BOOL Stop();
 	BOOL TiltCamera(int angleDelta);
 	IFTImage* GetImage();
 	BOOL IsReceivingData();
