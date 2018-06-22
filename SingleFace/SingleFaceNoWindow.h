@@ -10,7 +10,7 @@
 #define KINECT_API __declspec(dllimport)
 #endif
 
-
+typedef void(__stdcall *KINECTFACETRACKERCB)(double, double, double, double, double, double);
 
 class SingleFaceNoWindow
 {
@@ -25,6 +25,7 @@ public:
 	{}
 
 	BOOL Start(int port);
+	BOOL StartWithCallback(int port, KINECTFACETRACKERCB callback);
 	BOOL Stop();
 	BOOL TiltCamera(int angleDelta);
 	IFTImage* GetImage();

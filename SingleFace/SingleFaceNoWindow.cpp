@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "SingleFaceNoWindow.h"
 
-
 static char* SERVER = "127.0.0.1";
 static int	 PORT = 5550;
 
@@ -11,6 +10,13 @@ WSADATA wsa;
 int udp_socket;
 double FTData[6];
 int FTData_len = sizeof(FTData);
+KINECTFACETRACKERCB _callback = NULL;
+
+int SingleFaceNoWindow::StartWithCallback(int port, KINECTFACETRACKERCB callback)
+{
+	_callback = callback;
+	return Start(port);
+}
 
 // Run the SingleFace application.
 int SingleFaceNoWindow::Start(int port)
@@ -81,6 +87,8 @@ int SingleFaceNoWindow::Start(int port)
 
 int SingleFaceNoWindow::Stop()
 {
+	_callback = NULL;
+
 	// Clean up the memory allocated for Face Tracking and rendering.
 	m_FTHelper.Stop();
 
@@ -160,7 +168,7 @@ void SingleFaceNoWindow::FTHelperCallingBack(PVOID pVoid)
 			FTData[1] = (double)(translationXYZ[1] * 100.0f);	// Y (in cm)
 			FTData[2] = (double)(translationXYZ[2] * 100.0f);	// Z (in cm)
 
-													//Rotation
+			//Rotation
 			FTData[3] = (double)rotationXYZ[1];	// Yaw
 			FTData[4] = (double)rotationXYZ[0];	// Pitch
 			FTData[5] = (double)rotationXYZ[2];	// Roll
@@ -172,6 +180,10 @@ void SingleFaceNoWindow::FTHelperCallingBack(PVOID pVoid)
 			{
 				printf("sendto() failed with error code : %d", WSAGetLastError());
 				exit(EXIT_FAILURE);
+			}
+
+			if (_callback) {
+				_callback(FTData[0], FTData[1], FTData[2], FTData[3], FTData[4], FTData[5]);
 			}
 		}
 	}
