@@ -24,7 +24,7 @@ namespace KinectHeadtracker
 
         private void Tracker_OnReceiveData(double x, double y, double z, double yaw, double pitch, double roll)
         {
-            if (IsDisposed)
+            if (IsDisposed || !Visible || WindowState == FormWindowState.Minimized)
                 return;
 
             Invoke(new Action(() =>
