@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SingleFace", "SingleFace\Si
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KinectHeadtracker", "KinectHeadtracker\KinectHeadtracker.csproj", "{8C87913B-B3BD-43F9-9B93-2DC619E66F0F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kinect.FreePIE", "Kinect.FreePIE\Kinect.FreePIE.csproj", "{B8656411-636A-423D-B1CF-9D0FF6860958}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,18 @@ Global
 		{8C87913B-B3BD-43F9-9B93-2DC619E66F0F}.Release|Win32.Build.0 = Release|Any CPU
 		{8C87913B-B3BD-43F9-9B93-2DC619E66F0F}.Release|x64.ActiveCfg = Release|x64
 		{8C87913B-B3BD-43F9-9B93-2DC619E66F0F}.Release|x64.Build.0 = Release|x64
+		{B8656411-636A-423D-B1CF-9D0FF6860958}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8656411-636A-423D-B1CF-9D0FF6860958}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8656411-636A-423D-B1CF-9D0FF6860958}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{B8656411-636A-423D-B1CF-9D0FF6860958}.Debug|Win32.Build.0 = Debug|Any CPU
+		{B8656411-636A-423D-B1CF-9D0FF6860958}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B8656411-636A-423D-B1CF-9D0FF6860958}.Debug|x64.Build.0 = Debug|Any CPU
+		{B8656411-636A-423D-B1CF-9D0FF6860958}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8656411-636A-423D-B1CF-9D0FF6860958}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8656411-636A-423D-B1CF-9D0FF6860958}.Release|Win32.ActiveCfg = Release|Any CPU
+		{B8656411-636A-423D-B1CF-9D0FF6860958}.Release|Win32.Build.0 = Release|Any CPU
+		{B8656411-636A-423D-B1CF-9D0FF6860958}.Release|x64.ActiveCfg = Release|Any CPU
+		{B8656411-636A-423D-B1CF-9D0FF6860958}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
