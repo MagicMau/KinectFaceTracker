@@ -128,7 +128,7 @@ BOOL SingleFaceNoWindow::TiltCamera(int angleDelta)
 	NuiCameraElevationGetAngle(&angle);
 
 	angle += angleDelta;
-	if (angle > NUI_CAMERA_ELEVATION_MINIMUM & angle < NUI_CAMERA_ELEVATION_MAXIMUM)
+	if (angle > NUI_CAMERA_ELEVATION_MINIMUM && angle < NUI_CAMERA_ELEVATION_MAXIMUM)
 		NuiCameraElevationSetAngle(angle);
 
 	return ret;
