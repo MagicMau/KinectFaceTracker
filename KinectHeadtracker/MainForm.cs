@@ -14,6 +14,7 @@ namespace KinectHeadtracker
     {
         private const int UDP_PORT = 5550;
         private KinectFaceTracker tracker;
+        private DateTime lastDataReceived;
 
         public MainForm()
         {
@@ -30,21 +31,25 @@ namespace KinectHeadtracker
             Invoke(new Action(() =>
             {
                 cbxReceivingData.Checked = true;
+                lastDataReceived = DateTime.Now;
 
-                lblX.Text = x.ToString();
-                lblY.Text = y.ToString();
-                lblZ.Text = z.ToString();
-                lblYaw.Text = yaw.ToString();
-                lblPitch.Text = pitch.ToString();
-                lblRoll.Text = roll.ToString();
+                if (WindowState != FormWindowState.Minimized)
+                {
+                    lblX.Text = x.ToString();
+                    lblY.Text = y.ToString();
+                    lblZ.Text = z.ToString();
+                    lblYaw.Text = yaw.ToString();
+                    lblPitch.Text = pitch.ToString();
+                    lblRoll.Text = roll.ToString();
 
-                if (cbxLiveVideo.Checked)
-                {
-                    picLiveVideo.Image = tracker.GetImage();
-                }
-                else
-                {
-                    picLiveVideo.Image = null;
+                    if (cbxLiveVideo.Checked)
+                    {
+                        picLiveVideo.Image = tracker.GetImage();
+                    }
+                    else
+                    {
+                        picLiveVideo.Image = null;
+                    }
                 }
             }));
         }
@@ -56,10 +61,17 @@ namespace KinectHeadtracker
 
         private void CbxEnabled_CheckedChanged(object sender, EventArgs e)
         {
+            timer1.Enabled = cbxEnabled.Checked;
+
             if (cbxEnabled.Checked)
+            {
+                lastDataReceived = DateTime.Now;
                 tracker.StartWithCallback(UDP_PORT);
+            }
             else
+            {
                 tracker.Stop();
+            }
         }
 
         private void BtnCameraUp_Click(object sender, EventArgs e)
@@ -76,6 +88,25 @@ namespace KinectHeadtracker
         {
             tracker.OnReceiveData -= Tracker_OnReceiveData;
             tracker.Stop();
+        }
+
+        private void Timer1_Tick(object sender, EventArgs e)
+        {
+            if (cbxEnabled.Checked)
+            {
+                // we're running
+                var timeout = DateTime.Now - lastDataReceived;
+                if (cbxReceivingData.Checked && timeout.TotalSeconds > 5)
+                    cbxReceivingData.Checked = false;
+
+                if (timeout.TotalMinutes > 5)
+                {
+                    // we haven't received any data for five minutes. Let's call it quits
+                    cbxEnabled.Checked = false;
+                    timer1.Enabled = false;
+                    tracker.Stop();
+                }
+            }
         }
     }
 }

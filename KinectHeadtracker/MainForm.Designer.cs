@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.btnCameraUp = new System.Windows.Forms.Button();
             this.btnCameraDown = new System.Windows.Forms.Button();
@@ -49,6 +50,7 @@
             this.lblPitch = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.lblRoll = new System.Windows.Forms.Label();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.picLogo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picLiveVideo)).BeginInit();
             this.SuspendLayout();
@@ -251,6 +253,11 @@
             this.lblRoll.TabIndex = 6;
             this.lblRoll.Text = "0";
             // 
+            // timer1
+            // 
+            this.timer1.Interval = 5000;
+            this.timer1.Tick += new System.EventHandler(this.Timer1_Tick);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -314,5 +321,6 @@
         private System.Windows.Forms.Label lblPitch;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label lblRoll;
+        private System.Windows.Forms.Timer timer1;
     }
 }
