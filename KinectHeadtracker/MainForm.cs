@@ -57,6 +57,7 @@ namespace KinectHeadtracker
         private void MainForm_Load(object sender, EventArgs e)
         {
             tracker.StartWithCallback(UDP_PORT);
+            timer1.Enabled = true;
         }
 
         private void CbxEnabled_CheckedChanged(object sender, EventArgs e)
