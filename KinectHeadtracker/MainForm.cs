@@ -41,15 +41,6 @@ namespace KinectHeadtracker
                     lblYaw.Text = yaw.ToString();
                     lblPitch.Text = pitch.ToString();
                     lblRoll.Text = roll.ToString();
-
-                    if (cbxLiveVideo.Checked)
-                    {
-                        picLiveVideo.Image = tracker.GetImage();
-                    }
-                    else
-                    {
-                        picLiveVideo.Image = null;
-                    }
                 }
             }));
         }
@@ -105,9 +96,27 @@ namespace KinectHeadtracker
                     // we haven't received any data for five minutes. Let's call it quits
                     cbxEnabled.Checked = false;
                     timer1.Enabled = false;
+                    timer2.Enabled = false;
                     tracker.Stop();
                 }
             }
+        }
+
+        private void timer2_Tick(object sender, EventArgs e)
+        {
+            if (cbxLiveVideo.Checked)
+            {
+                picLiveVideo.Image = tracker.GetImage();
+            }
+            else
+            {
+                picLiveVideo.Image = null;
+            }
+        }
+
+        private void cbxLiveVideo_CheckedChanged(object sender, EventArgs e)
+        {
+            timer2.Enabled = cbxLiveVideo.Checked;
         }
     }
 }
